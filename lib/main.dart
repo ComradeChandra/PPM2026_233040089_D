@@ -79,7 +79,7 @@ class Pertemuan1Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      app_bar: AppBar(title: const Text('Pertemuan 1')),
+      appBar: AppBar(title: const Text('Pertemuan 1')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
