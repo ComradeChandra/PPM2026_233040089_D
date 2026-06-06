@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../pertemuan_1/lib/profile_card.dart';
-import '../pertemuan_1/lib/latihan1_text.dart';
-import '../pertemuan_1/lib/latihan2_container.dart';
-import '../pertemuan_1/lib/latihan3_row_column.dart';
-import '../pertemuan_1/lib/latihan4_icons.dart';
+import 'profile_card.dart';
+import 'latihan1_text.dart';
+import 'latihan2_container.dart';
+import 'latihan3_row_column.dart';
+import 'latihan4_icons.dart';
 
 void main() {
   runApp(const MyApp());
