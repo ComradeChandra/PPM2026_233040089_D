@@ -139,20 +139,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-  pertemuan_1:
-    dependency: "direct main"
-    description:
-      path: pertemuan_1
-      relative: true
-    source: path
-    version: "1.0.0+1"
-  pertemuan_2:
-    dependency: "direct main"
-    description:
-      path: pertemuan_2
-      relative: true
-    source: path
-    version: "1.0.0+1"
   sky_engine:
     dependency: transitive
     description: flutter

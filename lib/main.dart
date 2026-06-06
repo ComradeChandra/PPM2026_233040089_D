@@ -4,6 +4,7 @@ import 'package:pertemuan_1/latihan1_text.dart';
 import 'package:pertemuan_1/latihan2_container.dart';
 import 'package:pertemuan_1/latihan3_row_column.dart';
 import 'package:pertemuan_1/latihan4_icons.dart';
+import 'package:pertemuan_2/main.dart'; // Import dari folder pertemuan_2
 
 void main() {
   runApp(const MyApp());
@@ -44,10 +45,16 @@ class MainMenu extends StatelessWidget {
             context,
             'Pertemuan 1',
             'Hello World, Profile Card, & Widget Dasar',
-            const ProfileCardScreen(),
+            const Pertemuan1Menu(),
             Icons.folder,
           ),
-          // Nanti Pertemuan 2 tinggal tambah di sini
+          _buildMenuTile(
+            context,
+            'Pertemuan 2',
+            'Tugas Pertemuan 2 (Coming Soon)',
+            const PlaceholderPertemuan2(),
+            Icons.folder_shared,
+          ),
         ],
       ),
     );
@@ -57,6 +64,7 @@ class MainMenu extends StatelessWidget {
       Widget screen, IconData icon) {
     return Card(
       elevation: 2,
+      margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: Icon(icon, color: Colors.blue),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -65,7 +73,7 @@ class MainMenu extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Pertemuan1Menu()),
+            MaterialPageRoute(builder: (context) => screen),
           );
         },
       ),
@@ -85,22 +93,27 @@ class Pertemuan1Menu extends StatelessWidget {
         children: [
           ListTile(
             title: const Text('Kartu Profil'),
+            trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileCardScreen())),
           ),
           ListTile(
             title: const Text('Latihan 1: Text'),
+            trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Latihan1Screen())),
           ),
           ListTile(
             title: const Text('Latihan 2: Container'),
+            trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Latihan2Screen())),
           ),
           ListTile(
             title: const Text('Latihan 3: Row & Column'),
+            trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Latihan3Screen())),
           ),
           ListTile(
             title: const Text('Latihan 4: Icon & Bottom Bar'),
+            trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Latihan4Screen())),
           ),
         ],
