@@ -1,5 +1,5 @@
-name: ppm2026_233040089_d
-description: "Main Project Workspace"
+name: pertemuan_1
+description: "Tugas Praktikum Pertemuan 1"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,8 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  pertemuan_1:
-    path: ./pertemuan_1
 
 dev_dependencies:
   flutter_test:
