@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widget_gallery.dart';
+import 'p2_widget_gallery.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'main.dart' show Catatan;
+import 'p4_main.dart' show Catatan;
 
 class DbHelper {
   DbHelper._();
