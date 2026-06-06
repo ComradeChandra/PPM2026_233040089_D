@@ -9,34 +9,56 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profil Saya'),
+        // Tombol Back manual supaya pasti bisa balik ke Dashboard
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () {},
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Fitur pencarian belum tersedia')),
+              );
+            },
           ),
         ],
       ),
+      // Drawer untuk akses Widget Gallery
       drawer: Drawer(
         child: ListView(
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.blue),
-              child: Text(
-                'Menu',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.person, color: Colors.blue),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Menu Utama',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ],
               ),
             ),
-            const ListTile(leading: Icon(Icons.home), title: Text('Beranda')),
-            const ListTile(leading: Icon(Icons.person), title: Text('Profil')),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Beranda'),
+              onTap: () => Navigator.pop(context),
+            ),
             ListTile(
               leading: const Icon(Icons.widgets),
               title: const Text('Widget Gallery'),
               onTap: () {
-                Navigator.pop(context); // tutup drawer dulu
+                Navigator.pop(context); // Tutup drawer
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const GalleryHome()),
@@ -47,6 +69,7 @@ class ProfilePage extends StatelessWidget {
               leading: const Icon(Icons.settings),
               title: const Text('Pengaturan'),
               onTap: () {
+                Navigator.pop(context); // Tutup drawer
                 showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -142,7 +165,11 @@ class ProfilePage extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Pesan'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Setting'),
         ],
-        onTap: (i) {},
+        onTap: (i) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Navigasi ke tab $i')),
+          );
+        },
       ),
     );
   }
