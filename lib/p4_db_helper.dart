@@ -1,63 +1,46 @@
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'p4_main.dart' show Catatan;
 
+// Mock DbHelper untuk Web (karena sqflite gak support Chrome)
 class DbHelper {
   DbHelper._();
   static final DbHelper instance = DbHelper._();
 
-  static const _dbName = 'catatan.db';
-  static const _dbVersion = 1;
-  static const tabel = 'catatan';
+  // Simpan di memori aja kalau di Web biar bisa di-run di Chrome
+  static final List<Catatan> _mockDb = [];
+  static int _nextId = 1;
 
-  Database? _db;
-
-  Future<Database> get database async {
-    if (_db != null) return _db!;
-    _db = await _openDb();
-    return _db!;
-  }
-
-  Future<Database> _openDb() async {
-    final dir = await getDatabasesPath();
-    final path = join(dir, _dbName);
-    return openDatabase(
-      path,
-      version: _dbVersion,
-      onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE $tabel (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            judul       TEXT    NOT NULL,
-            isi         TEXT    NOT NULL,
-            kategori    TEXT    NOT NULL,
-            dibuat_pada INTEGER NOT NULL
-          )
-        ''');
-      },
-    );
-  }
+  Future<void> get database async {}
 
   Future<int> insert(Catatan c) async {
-    final db = await database;
-    return db.insert(tabel, c.toMap());
+    final baru = Catatan(
+      id: _nextId++,
+      judul: c.judul,
+      isi: c.isi,
+      kategori: c.kategori,
+      dibuatPada: c.dibuatPada,
+    );
+    _mockDb.add(baru);
+    return baru.id!;
   }
 
   Future<List<Catatan>> getAll() async {
-    final db = await database;
-    final rows = await db.query(tabel, orderBy: 'dibuat_pada DESC');
-    return rows.map(Catatan.fromMap).toList();
+    // Balikin list yang diurutin berdasarkan tanggal terbaru
+    final list = List<Catatan>.from(_mockDb);
+    list.sort((a, b) => b.dibuatPada.compareTo(a.dibuatPada));
+    return list;
   }
 
   Future<int> update(Catatan c) async {
-    assert(c.id != null);
-    final db = await database;
-    return db.update(tabel, c.toMap(),
-        where: 'id = ?', whereArgs: [c.id]);
+    final index = _mockDb.indexWhere((item) => item.id == c.id);
+    if (index != -1) {
+      _mockDb[index] = c;
+      return 1;
+    }
+    return 0;
   }
 
   Future<int> delete(int id) async {
-    final db = await database;
-    return db.delete(tabel, where: 'id = ?', whereArgs: [id]);
+    _mockDb.removeWhere((item) => item.id == id);
+    return 1;
   }
 }
