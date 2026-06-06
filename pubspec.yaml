@@ -14,6 +14,7 @@ dependencies:
     path: ./pertemuan_1
   pertemuan_2:
     path: ./pertemuan_2
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
