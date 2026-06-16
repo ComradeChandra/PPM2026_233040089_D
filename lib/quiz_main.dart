@@ -16,6 +16,8 @@ class _QuizProfilePageState extends State<QuizProfilePage> {
   String _prodi = 'Mahasiswa Teknik Informatika';
   String _bio = 'Saya Chandra, mahasiswa Teknik Informatika yang suka belajar hal baru, terutama pengembangan aplikasi mobile.';
   String _pendidikan = 'Universitas Pasundan — Semester 5\nNIM: 233040089';
+  String _lokasi = 'Bandung, Jawa Barat';
+  String _kontak = '233040089@mail.unpas.ac.id';
   String _skills = 'Flutter • Dart • Java • Git • UI/UX Design';
   XFile? _imageFile;
 
@@ -24,30 +26,11 @@ class _QuizProfilePageState extends State<QuizProfilePage> {
   String _expDesc = 'Pernah magang sebagai Mobile Developer di PT. Teknologi Indonesia selama 6 bulan.';
   XFile? _expImageFile;
 
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> _pickImage(bool isProfile) async {
-    final XFile? selected = await _picker.pickImage(source: ImageSource.gallery);
-    if (selected != null) {
-      setState(() {
-        if (isProfile) {
-          _imageFile = selected;
-        } else {
-          _expImageFile = selected;
-        }
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profil Saya'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-        ),
       ),
       drawer: Drawer(
         child: ListView(
@@ -59,11 +42,27 @@ class _QuizProfilePageState extends State<QuizProfilePage> {
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Edit Profil Utama'),
+              onTap: () {
+                Navigator.pop(context);
+                _goToEditProfile();
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.work),
               title: const Text('Edit Pengalaman (Bonus)'),
               onTap: () {
                 Navigator.pop(context);
                 _goToEditExp();
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.red),
+              title: const Text('Kembali ke Dashboard', style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
               },
             ),
           ],
@@ -96,12 +95,23 @@ class _QuizProfilePageState extends State<QuizProfilePage> {
             const SizedBox(height: 24),
             _SectionCard(icon: Icons.info_outline, title: 'Tentang Saya', content: _bio),
             _SectionCard(icon: Icons.school, title: 'Pendidikan', content: _pendidikan),
+            _SectionCard(icon: Icons.location_on, title: 'Lokasi', content: _lokasi),
+            _SectionCard(icon: Icons.email, title: 'Kontak', content: _kontak),
             _SectionCard(icon: Icons.star, title: 'Skills', content: _skills),
             
             // === BONUS EXPERIENCE SECTION ===
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Text('Pengalaman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Pengalaman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                    onPressed: _goToEditExp,
+                  ),
+                ],
+              ),
             ),
             Card(
               child: Padding(
@@ -110,16 +120,18 @@ class _QuizProfilePageState extends State<QuizProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (_expImageFile != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: kIsWeb 
-                            ? Image.network(_expImageFile!.path, height: 150, width: double.infinity, fit: BoxFit.cover)
-                            : Image.file(File(_expImageFile!.path), height: 150, width: double.infinity, fit: BoxFit.cover),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: kIsWeb 
+                              ? Image.network(_expImageFile!.path, height: 150, width: double.infinity, fit: BoxFit.cover)
+                              : Image.file(File(_expImageFile!.path), height: 150, width: double.infinity, fit: BoxFit.cover),
+                        ),
                       ),
-                    const SizedBox(height: 10),
                     Text(_expTitle, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
-                    Text(_expDesc),
+                    Text(_expDesc, style: const TextStyle(color: Colors.black87)),
                   ],
                 ),
               ),
@@ -144,6 +156,9 @@ class _QuizProfilePageState extends State<QuizProfilePage> {
           initialName: _name,
           initialBio: _bio,
           initialPendidikan: _pendidikan,
+          initialLokasi: _lokasi,
+          initialKontak: _kontak,
+          initialSkills: _skills,
           initialImage: _imageFile,
         ),
       ),
@@ -154,6 +169,9 @@ class _QuizProfilePageState extends State<QuizProfilePage> {
         _name = result['name'];
         _bio = result['bio'];
         _pendidikan = result['pendidikan'];
+        _lokasi = result['lokasi'];
+        _kontak = result['kontak'];
+        _skills = result['skills'];
         _imageFile = result['image'];
       });
     }
@@ -185,6 +203,9 @@ class EditProfilePage extends StatefulWidget {
   final String initialName;
   final String initialBio;
   final String initialPendidikan;
+  final String initialLokasi;
+  final String initialKontak;
+  final String initialSkills;
   final XFile? initialImage;
 
   const EditProfilePage({
@@ -192,6 +213,9 @@ class EditProfilePage extends StatefulWidget {
     required this.initialName,
     required this.initialBio,
     required this.initialPendidikan,
+    required this.initialLokasi,
+    required this.initialKontak,
+    required this.initialSkills,
     this.initialImage,
   });
 
@@ -203,6 +227,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _nameCtrl;
   late TextEditingController _bioCtrl;
   late TextEditingController _pendidikanCtrl;
+  late TextEditingController _lokasiCtrl;
+  late TextEditingController _kontakCtrl;
+  late TextEditingController _skillsCtrl;
   XFile? _selectedImage;
 
   @override
@@ -211,6 +238,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _nameCtrl = TextEditingController(text: widget.initialName);
     _bioCtrl = TextEditingController(text: widget.initialBio);
     _pendidikanCtrl = TextEditingController(text: widget.initialPendidikan);
+    _lokasiCtrl = TextEditingController(text: widget.initialLokasi);
+    _kontakCtrl = TextEditingController(text: widget.initialKontak);
+    _skillsCtrl = TextEditingController(text: widget.initialSkills);
     _selectedImage = widget.initialImage;
   }
 
@@ -238,17 +268,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     children: [
                       if (_selectedImage != null)
                         CircleAvatar(
+                          radius: 18,
                           backgroundColor: Colors.red,
                           child: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.white),
+                            icon: const Icon(Icons.delete, color: Colors.white, size: 18),
                             onPressed: () => setState(() => _selectedImage = null),
                           ),
                         ),
                       const SizedBox(width: 8),
                       CircleAvatar(
+                        radius: 20,
                         backgroundColor: Colors.blue,
                         child: IconButton(
-                          icon: const Icon(Icons.camera_alt, color: Colors.white),
+                          icon: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
                           onPressed: () async {
                             final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
                             if (image != null) setState(() => _selectedImage = image);
@@ -262,24 +294,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           ),
           const SizedBox(height: 24),
-          TextField(controller: _nameCtrl, decoration: const InputDecoration(labelText: 'Nama Lengkap', border: OutlineInputBorder())),
-          const SizedBox(height: 16),
-          TextField(controller: _bioCtrl, maxLines: 3, decoration: const InputDecoration(labelText: 'Tentang Saya', border: OutlineInputBorder())),
-          const SizedBox(height: 16),
-          TextField(controller: _pendidikanCtrl, maxLines: 2, decoration: const InputDecoration(labelText: 'Pendidikan', border: OutlineInputBorder())),
-          const SizedBox(height: 24),
+          _field(_nameCtrl, 'Nama Lengkap'),
+          _field(_bioCtrl, 'Tentang Saya', maxLines: 3),
+          _field(_pendidikanCtrl, 'Pendidikan', maxLines: 2),
+          _field(_lokasiCtrl, 'Lokasi'),
+          _field(_kontakCtrl, 'Kontak (Email)'),
+          _field(_skillsCtrl, 'Skills'),
+          const SizedBox(height: 32),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
             onPressed: () {
               Navigator.pop(context, {
                 'name': _nameCtrl.text,
                 'bio': _bioCtrl.text,
                 'pendidikan': _pendidikanCtrl.text,
+                'lokasi': _lokasiCtrl.text,
+                'kontak': _kontakCtrl.text,
+                'skills': _skillsCtrl.text,
                 'image': _selectedImage,
               });
             },
             child: const Text('Simpan Perubahan'),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _field(TextEditingController ctrl, String label, {int maxLines = 1}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: ctrl,
+        maxLines: maxLines,
+        decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
       ),
     );
   }
@@ -316,26 +364,50 @@ class _EditExperiencePageState extends State<EditExperiencePage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const Text('Gambar Pengalaman:', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
           if (_selectedImage != null)
-            Image(
-              image: kIsWeb ? NetworkImage(_selectedImage!.path) : FileImage(File(_selectedImage!.path)) as ImageProvider,
-              height: 200,
-              fit: BoxFit.cover,
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image(
+                    image: kIsWeb ? NetworkImage(_selectedImage!.path) : FileImage(File(_selectedImage!.path)) as ImageProvider,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.cancel, color: Colors.red, size: 30),
+                  onPressed: () => setState(() => _selectedImage = null),
+                ),
+              ],
             ),
-          ElevatedButton.icon(
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
             onPressed: () async {
               final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
               if (image != null) setState(() => _selectedImage = image);
             },
             icon: const Icon(Icons.image),
-            label: const Text('Pilih Gambar Pengalaman'),
+            label: Text(_selectedImage == null ? 'Pilih Gambar' : 'Ganti Gambar'),
+          ),
+          const SizedBox(height: 24),
+          TextField(
+            controller: _titleCtrl,
+            decoration: const InputDecoration(labelText: 'Judul Pengalaman', border: OutlineInputBorder()),
           ),
           const SizedBox(height: 16),
-          TextField(controller: _titleCtrl, decoration: const InputDecoration(labelText: 'Judul Pengalaman', border: OutlineInputBorder())),
-          const SizedBox(height: 16),
-          TextField(controller: _descCtrl, maxLines: 4, decoration: const InputDecoration(labelText: 'Deskripsi', border: OutlineInputBorder())),
-          const SizedBox(height: 24),
+          TextField(
+            controller: _descCtrl,
+            maxLines: 5,
+            decoration: const InputDecoration(labelText: 'Deskripsi Singkat', border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: 32),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
             onPressed: () {
               Navigator.pop(context, {
                 'title': _titleCtrl.text,
@@ -373,7 +445,7 @@ class _SectionCard extends StatelessWidget {
                 children: [
                   Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
-                  Text(content, style: const TextStyle(height: 1.4)),
+                  Text(content, style: const TextStyle(height: 1.4, color: Colors.black87)),
                 ],
               ),
             ),
