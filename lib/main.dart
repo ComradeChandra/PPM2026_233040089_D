@@ -9,6 +9,7 @@ import 'p2_main.dart' as p2;
 import 'p3_main.dart' as p3;
 import 'p4_main.dart' as p4;
 import 'p5_main.dart' as p5;
+import 'quiz_main.dart' as quiz; // Import Quiz
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +73,9 @@ class MyApp extends StatelessWidget {
           case '/p5_detail':
             final arg = settings.arguments as p5.Catatan;
             return MaterialPageRoute(builder: (context) => p5.DetailCatatanPage(catatan: arg));
+
+          case '/quiz': // Route Quiz
+            return MaterialPageRoute(builder: (context) => const quiz.QuizProfilePage());
         }
         return null;
       },
@@ -93,6 +97,7 @@ class MainMenu extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _buildMenuTile(context, 'Quiz Praktikum', 'Edit Profile & Experience', '/quiz', Icons.quiz),
           _buildMenuTile(context, 'Pertemuan 1', 'Profile & Widget Dasar', '/p1_menu', Icons.folder),
           _buildMenuTile(context, 'Pertemuan 2', 'Scaffold & Gallery', '/p2_home', Icons.folder_shared),
           _buildMenuTile(context, 'Pertemuan 3', 'Stateful & Navigation', '/p3_home', Icons.note_add),
